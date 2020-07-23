@@ -1,4 +1,12 @@
-第一步：参考要点
+# 初步思路
+
+### SDK 侧
+
+### 服务收集 侧
+
+### 数据分析 侧
+
+### 参考要点
 
 ```
 章节1:前端监控架构设计
@@ -27,3 +35,11 @@
 课时20设置JS同步增长告警05:32
 课时21告警准确性问题
 ```
+
+### 参考资料
+
+- [performance](https://juejin.im/post/5d66655a5188256c3920b35d#heading-30)
+- [贝壳灯塔](https://github.com/LianjiaTech/fee)
+- [学习 sentry 源码整体架构](https://juejin.im/post/5dba5a39e51d452a2378348a)
+- [zanePerfor](https://github.com/wangweianger/zanePerfor/tree/master/app)
+
