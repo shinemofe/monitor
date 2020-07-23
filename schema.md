@@ -82,4 +82,5 @@
 - [贝壳灯塔](https://github.com/LianjiaTech/fee)
 - [学习 sentry 源码整体架构](https://juejin.im/post/5dba5a39e51d452a2378348a)
 - [zanePerfor](https://github.com/wangweianger/zanePerfor/tree/master/app)
+- [FunDebug](https://www.fundebug.com/)
 
