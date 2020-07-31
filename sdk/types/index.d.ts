@@ -21,8 +21,23 @@ export interface MonitorInterface {
 }
 
 export type TrackItem = {
-  type: 'element' | 'page'
-  data: TrackItemElement | TrackItemPage
+  type: 'click' | 'page' | 'xhr' | 'log'
+  data: TrackItemElement | TrackItemPage | TrackXhr | TrackLog
+}
+
+type TrackXhr = {
+  type: 'request' | 'response'
+  url: string
+  method?: string
+  body?: any
+  status?: number
+  responseText?: string
+  responseType?: 'load' | 'error' | 'timeout'
+}
+
+type TrackLog = {
+  type: 'log' | 'warn',
+  message: string
 }
 
 type TrackItemElement = {

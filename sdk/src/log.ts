@@ -5,7 +5,7 @@ type Log = {
 }
 
 const typeColor = {
-  info: 'blue',
+  info: '#3b8ff6',
   error: 'red',
   debug: undefined
 }
