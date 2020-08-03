@@ -1,0 +1,8 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 9
+  },
+  "extends": [
+    "eslint-config-standard"
+  ]
+}
