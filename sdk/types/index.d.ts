@@ -1,5 +1,6 @@
 export type Option = {
   appId: string
+  domain: string
 }
 
 export type UserInfo = {
@@ -69,4 +70,8 @@ type ReportItem = {
     componentTag: string
     handlePosition?: string
   }
+  status?: number
+  responseText?: string
+  responseURL?: string
+  timeout?: number
 }

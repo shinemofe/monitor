@@ -1,5 +1,6 @@
 import { MonitorInterface, Option, UserInfo, TrackItem, ReportItem } from 'types/index'
 import Cookies from 'js-cookie'
+import md5 from 'js-md5'
 import { log } from './log'
 
 export default class Monitor implements MonitorInterface {
@@ -7,14 +8,15 @@ export default class Monitor implements MonitorInterface {
   userInfo?: UserInfo
   track: Array<TrackItem> = []
   options: Option = {
-    appId: ''
+    appId: '',
+    domain: 'http://localhost:9424'
   }
 
   constructor (options: Option) {
     if (typeof options !== 'object' || !options.appId) {
       log.error('初始化请传入应用的 appId')
     } else {
-      this.options = options
+      Object.assign(this.options, options)
       this.initUserInfo()
       this.bindPerformance()
       this.trackClick()
@@ -26,9 +28,11 @@ export default class Monitor implements MonitorInterface {
   }
 
   report (item: ReportItem) {
-    // const img = new Image()
-    // img.src = `http://`
-    console.warn(item, Date.now())
+    const img = new Image()
+    img.src = `${this.options.domain}/monitor/report?appId=${this.options.appId}&id=${this.getErrorId(item)}&detail=${JSON.stringify(item)}`
+    img.onload = () => {
+      log.debug(`上报成功: ${this.getErrorId(item)}`)
+    }
     this.clearTrack()
   }
 
@@ -166,13 +170,11 @@ export default class Monitor implements MonitorInterface {
   }
 
   bindXHR () {
-    // @ts-ignore
     const that = this
     const _bind = () => {
       const xhr = XMLHttpRequest.prototype
       const send = xhr.send
       const open = xhr.open
-      // @ts-ignore
       xhr.open = function (method: string, url: string) {
         that.addTrack({
           type: 'xhr',
@@ -182,8 +184,7 @@ export default class Monitor implements MonitorInterface {
             method
           }
         })
-        // @ts-ignore
-        open.call(this, method, url)
+        open.call(this, method, url, true)
       }
       xhr.send = function (data) {
         this.addEventListener('error', function () {
@@ -195,7 +196,6 @@ export default class Monitor implements MonitorInterface {
           })
         })
         this.addEventListener('load', function () {
-          // console.log('load', this)
           that.addTrack({
             type: 'xhr',
             data: {
@@ -216,13 +216,12 @@ export default class Monitor implements MonitorInterface {
             timeout: this.timeout
           })
         })
-        // @ts-ignore
         send.call(this, data)
       }
     }
     _bind()
   }
-  
+
   bindConsole () {
     const log = console.log
     console.log = (...args) => {
@@ -261,13 +260,15 @@ export default class Monitor implements MonitorInterface {
     })
   }
 
+  getErrorId (item: ReportItem) {
+    if (item.responseURL) {
+      return md5(item.responseURL)
+    }
+    return md5(item.name + item.message)
+  }
+
   initUserInfo () {
-    const {
-      platform,
-      appVersion,
-      // @ts-ignore
-      connection
-    } = navigator
+    const { platform, appVersion, connection } = navigator as (Navigator & { connection?: { effectiveType: string } })
     const arr = appVersion.split(') ')
     const platformVersion = arr[0].split(' ').pop()
     const browser = arr.pop()!.split(' ')[0].split('/')
