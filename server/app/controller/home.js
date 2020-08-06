@@ -1,9 +1,15 @@
 const Controller = require('egg').Controller
+const { Base64 } = require('js-base64')
 
 class HomeController extends Controller {
-  async index () {
+  async report () {
     const { ctx } = this
-    ctx.body = 'hi, egg'
+    const { query } = ctx.request
+    if (query) {
+      const { data } = query
+      console.log(Base64.decode(data))
+    }
+    ctx.status = 200
   }
 }
 

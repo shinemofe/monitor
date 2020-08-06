@@ -2,6 +2,7 @@ import { MonitorInterface, Option, UserInfo, TrackItem, ReportItem } from 'types
 import Cookies from 'js-cookie'
 import md5 from 'js-md5'
 import { log } from './log'
+import { encode } from 'js-base64'
 
 export default class Monitor implements MonitorInterface {
   static uuidKey = 'xm_monitor_uuid'
@@ -9,7 +10,7 @@ export default class Monitor implements MonitorInterface {
   track: Array<TrackItem> = []
   options: Option = {
     appId: '',
-    domain: 'http://localhost:9424'
+    domain: process.env.VUE_APP_DOMAIN
   }
 
   constructor (options: Option) {
@@ -29,10 +30,15 @@ export default class Monitor implements MonitorInterface {
 
   report (item: ReportItem) {
     const img = new Image()
-    img.src = `${this.options.domain}/monitor/report?appId=${this.options.appId}&id=${this.getErrorId(item)}&detail=${JSON.stringify(item)}`
-    img.onload = () => {
-      log.debug(`上报成功: ${this.getErrorId(item)}`)
-    }
+    const data = encode(JSON.stringify({
+      appId: this.options.appId,
+      id: this.getErrorId(item),
+      detail: item
+    }), true)
+    img.src = `${this.options.domain}/monitor/report?data=${data}`
+    // img.onload = () => {
+    //   log.debug(`上报成功: ${this.getErrorId(item)}`)
+    // }
     this.clearTrack()
   }
 
@@ -169,6 +175,10 @@ export default class Monitor implements MonitorInterface {
     })
   }
 
+  filterString (str: string) {
+    return !/讯盟监控|sockjs-node/.test(str)
+  }
+
   bindXHR () {
     const that = this
     const _bind = () => {
@@ -176,14 +186,16 @@ export default class Monitor implements MonitorInterface {
       const send = xhr.send
       const open = xhr.open
       xhr.open = function (method: string, url: string) {
-        that.addTrack({
-          type: 'xhr',
-          data: {
-            type: 'request',
-            url,
-            method
-          }
-        })
+        if (that.filterString(url)) {
+          that.addTrack({
+            type: 'xhr',
+            data: {
+              type: 'request',
+              url,
+              method
+            }
+          })
+        }
         open.call(this, method, url, true)
       }
       xhr.send = function (data) {
@@ -196,16 +208,18 @@ export default class Monitor implements MonitorInterface {
           })
         })
         this.addEventListener('load', function () {
-          that.addTrack({
-            type: 'xhr',
-            data: {
-              type: 'response',
-              url: this.responseURL,
-              status: this.status,
-              responseType: 'load',
-              responseText: this.responseText
-            }
-          })
+          if (that.filterString(this.responseURL)) {
+            that.addTrack({
+              type: 'xhr',
+              data: {
+                type: 'response',
+                url: this.responseURL,
+                status: this.status,
+                responseType: 'load',
+                responseText: this.responseText
+              }
+            })
+          }
         })
         this.addEventListener('timeout', function () {
           log.error('xhr timeout')
@@ -226,13 +240,16 @@ export default class Monitor implements MonitorInterface {
     const log = console.log
     console.log = (...args) => {
       log(...args)
-      this.addTrack({
-        type: 'log',
-        data: {
+      const message = JSON.stringify(args)
+      if (this.filterString(message)) {
+        this.addTrack({
           type: 'log',
-          message: JSON.stringify(args)
-        }
-      })
+          data: {
+            type: 'log',
+            message
+          }
+        })
+      }
     }
   }
 

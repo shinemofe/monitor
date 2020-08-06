@@ -16,6 +16,14 @@ module.exports = appInfo => {
   // add your middleware config here
   config.middleware = []
 
+  config.cluster = {
+    listen: {
+      path: '',
+      port: 9424,
+      hostname: 'localhost'
+    }
+  }
+
   // add your user config here
   const userConfig = {
     // myAppName: 'egg',

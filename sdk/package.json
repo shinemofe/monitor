@@ -3,16 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name monitor src/index.ts",
+    "serve": "vue-cli-service serve --mode dev",
+    "build": "vue-cli-service build --mode test --target lib --name monitor src/index.ts",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "js-base64": "^3.4.4",
     "js-cookie": "^2.2.1",
-    "vue": "^2.6.11",
-    "js-md5": "^0.7.3"
+    "js-md5": "^0.7.3",
+    "vue": "^2.6.11"
   },
   "devDependencies": {
     "@types/jest": "^24.0.19",
