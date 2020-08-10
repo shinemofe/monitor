@@ -29,16 +29,19 @@ export default class Monitor implements MonitorInterface {
   }
 
   report (item: ReportItem) {
+    console.log(item)
     const img = new Image()
     const data = encode(JSON.stringify({
       appId: this.options.appId,
       id: this.getErrorId(item),
-      detail: item
+      detail: {
+        ...item,
+        title: document.title,
+        url: location.href,
+        userAgent: navigator.userAgent
+      }
     }), true)
     img.src = `${this.options.domain}/monitor/report?data=${data}`
-    // img.onload = () => {
-    //   log.debug(`上报成功: ${this.getErrorId(item)}`)
-    // }
     this.clearTrack()
   }
 

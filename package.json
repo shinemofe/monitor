@@ -1,0 +1,27 @@
+{
+  "name": "sparrow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "_fundebug-javascript@2.4.2@fundebug-javascript": "^2.4.2",
+    "_js-md5@0.7.3@js-md5": "^0.7.3",
+    "fundebug-javascript": "^2.4.2",
+    "js-md5": "^0.7.3",
+    "tcon": "^1.0.10"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shinemofe/monitor.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shinemofe/monitor/issues"
+  },
+  "homepage": "https://github.com/shinemofe/monitor#readme"
+}

@@ -74,4 +74,7 @@ type ReportItem = {
   responseText?: string
   responseURL?: string
   timeout?: number
+  title?: string
+  url?: string
+  userAgent?: string
 }
